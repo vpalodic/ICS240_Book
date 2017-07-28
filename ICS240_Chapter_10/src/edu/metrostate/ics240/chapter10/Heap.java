@@ -12,10 +12,37 @@ package edu.metrostate.ics240.chapter10;
  *
  */
 public interface Heap<T extends Comparable<T>> {
-	public void add(T element);
+	public boolean add(T element);
 	public void clear();
+	
+	/**
+	 * Generate a copy of this heap. 
+	 * <p>
+	 * <b>Note:</b>
+	 * <ul>
+	 * 	<li>
+	 * 		Be sure to cast the return value to the proper <code>Heap&lt;T&gt;</code> type
+	 *      before use.
+	 * 	</li>
+	 * </ul>
+	 * @return
+	 * 	The return value is a copy of this heap. Subsequent changes to the copy will not affect
+	 * 	the original, nor vice versa.
+	 * @throws OutOfMemoryError
+	 * 	Indicates that there is insufficient memory for the new heap.
+	 *  
+	 * (non-Javadoc)
+	 * @see java.lang.Object#clone()
+	 */
 	public Heap<T> clone();
+	
+	/**
+	 * Returns true if the stack is empty; otherwise, false is returned.
+	 * @return
+	 *  Returns true if the stack is empty; otherwise, false is returned.
+	 */
 	public boolean isEmpty();
+	
 	public T peek();
 	public T remove();
 	public int size();

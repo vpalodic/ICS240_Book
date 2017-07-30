@@ -1,5 +1,16 @@
+/**
+ * File: TreeNode.java
+ */
 package edu.metrostate.ics240.chapter10;
 
+/**
+ *
+ * @author Vincent J Palodichuk
+ * 	<A HREF="mailto:hu0011wy@metrostate.edu"> (e-mail me) </A>
+ *
+ * @version 07/27/2017
+ *
+ */
 public interface TreeNode<T> {
 	/**
 	 * Gets the left child of this node.

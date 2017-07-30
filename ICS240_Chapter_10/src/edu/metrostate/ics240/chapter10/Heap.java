@@ -37,13 +37,27 @@ public interface Heap<T extends Comparable<T>> {
 	public Heap<T> clone();
 	
 	/**
-	 * Returns true if the stack is empty; otherwise, false is returned.
+	 * Returns true if the heap is empty; otherwise, false is returned.
 	 * @return
-	 *  Returns true if the stack is empty; otherwise, false is returned.
+	 *  Returns true if the heap is empty; otherwise, false is returned.
 	 */
 	public boolean isEmpty();
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public T peek();
+	
+	/**
+	 * 
+	 * @return
+	 */
 	public T remove();
+	
+	/**
+	 * 
+	 * @return
+	 */
 	public int size();
 }

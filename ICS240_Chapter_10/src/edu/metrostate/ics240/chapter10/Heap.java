@@ -12,7 +12,16 @@ package edu.metrostate.ics240.chapter10;
  *
  */
 public interface Heap<T extends Comparable<T>> {
+	/**
+	 * 
+	 * @param element
+	 * @return
+	 */
 	public boolean add(T element);
+	
+	/**
+	 * 
+	 */
 	public void clear();
 	
 	/**
@@ -51,6 +60,16 @@ public interface Heap<T extends Comparable<T>> {
 	
 	/**
 	 * 
+	 */
+	public void heapify();
+	
+	/**
+	 * 
+	 */
+	public void heapify(T[] items);
+	
+	/**
+	 * 
 	 * @return
 	 */
 	public T remove();
@@ -60,4 +79,6 @@ public interface Heap<T extends Comparable<T>> {
 	 * @return
 	 */
 	public int size();
+	
+	public void sort();
 }

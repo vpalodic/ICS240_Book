@@ -331,7 +331,7 @@ public abstract class ArrayHeap<T extends Comparable<T>> implements Heap<T> {
 		numberOfItems = items.length;
 		this.items = items.clone();
 
-		rebuildHeap();
+		heapify();
 	}
 
 	/*
@@ -478,16 +478,6 @@ public abstract class ArrayHeap<T extends Comparable<T>> implements Heap<T> {
 	@Override
 	public T peek() {
 		return numberOfItems > 0 ? getItem(items, ROOT_INDEX) : null;
-	}
-
-	/**
-	 * 
-	 */
-	public void rebuildHeap() {
-		// Rebuild the heap from the bottom heap up!
-		for (int i = getParentIndex(numberOfItems - 1); i >= ROOT_INDEX; i--) {
-			siftDown(i, numberOfItems);
-		}
 	}
 
 	/*

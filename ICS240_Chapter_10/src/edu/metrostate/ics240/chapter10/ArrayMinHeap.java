@@ -31,7 +31,7 @@ public class ArrayMinHeap<T extends Comparable<T>> extends ArrayHeap<T> {
 	 * @param <T>
 	 * @param items
 	 */
-	public static <T extends Comparable<T>> void heapify(T[] items) {
+	public void heapify(T[] items) {
 		minHeapify(items);
 	}
 	

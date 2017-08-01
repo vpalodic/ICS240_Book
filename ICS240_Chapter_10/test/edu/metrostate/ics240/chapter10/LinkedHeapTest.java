@@ -1,5 +1,5 @@
 /**
- * File: ArrayHeapTest.java
+ * File: LinkedHeapTest.java
  */
 package edu.metrostate.ics240.chapter10;
 
@@ -12,15 +12,15 @@ import org.junit.Test;
  * @author Vincent J Palodichuk
  * 	<A HREF="mailto:hu0011wy@metrostate.edu"> (e-mail me) </A>
  *
- * @version 07/28/2017
+ * @version 07/31/2017
  *
  */
-public class ArrayHeapTest {
+public class LinkedHeapTest {
 
 	@Test
 	public final void testSmallMaxHeap() {
-		final int HEAP_SIZE = 20;
-		ArrayHeap<Integer> heap = new ArrayMaxHeap<Integer>(HEAP_SIZE);
+/*		final int HEAP_SIZE = 20;
+		LinkedHeap<Integer> heap = new LinkedMaxHeap<Integer>(HEAP_SIZE);
 		
 		assertNotNull(heap);
 		assertEquals(0, heap.size());
@@ -71,22 +71,21 @@ public class ArrayHeapTest {
 		
 		Integer[] items = {20, 5, 10, 12, 15, 8, 2, 6, 2, 9};
 		
-		heap = new ArrayMaxHeap<Integer>(items);
+		heap = new LinkedMaxHeap<Integer>(items);
 		heap.trimToSize();
 		
 		assertEquals(10, heap.size());
 		assertFalse(heap.isEmpty());
 		assertEquals(20, (int)heap.peek());
 		
-		ArrayHeap.maxHeapify(items);
-		ArrayHeap.minHeapify(items);
-		ArrayHeap.maxHeapify(items);
-	}
+		LinkedHeap.maxHeapify(items);
+		LinkedHeap.minHeapify(items);
+		LinkedHeap.maxHeapify(items);
+*/	}
 	
 	@Test
 	public final void testSmallMinHeap() {
-		final int HEAP_SIZE = 20;
-		ArrayHeap<Integer> heap = new ArrayMinHeap<Integer>(HEAP_SIZE);
+		LinkedHeap<Integer> heap = new LinkedMinHeap<Integer>();
 		
 		assertNotNull(heap);
 		assertEquals(0, heap.size());
@@ -110,21 +109,61 @@ public class ArrayHeapTest {
 		
 		assertEquals(4, heap.size());
 		assertEquals(12, (int)heap.peek());
-		heap.trimToSize();
+	
+		heap.add(10);
+		
+		assertEquals(5, heap.size());
+		assertEquals(10, (int)heap.peek());
+	
+		heap.add(32);
+		
+		assertEquals(6, heap.size());
+		assertEquals(10, (int)heap.peek());
+	
+		heap.add(96);
+		
+		assertEquals(7, heap.size());
+		assertEquals(10, (int)heap.peek());
+	
+		heap.add(1);
+		
+		assertEquals(8, heap.size());
+		assertEquals(1, (int)heap.peek());
+	
 		heap.remove();
 		
-		assertEquals(3, heap.size());
+		assertEquals(7, heap.size());
+		assertEquals(10, (int)heap.peek());
+		
+		heap.remove();
+		
+		assertEquals(6, heap.size());
+		assertEquals(12, (int)heap.peek());
+		
+		heap.remove();
+		
+		assertEquals(5, heap.size());
 		assertEquals(25, (int)heap.peek());
 		
 		heap.remove();
 		
-		assertEquals(2, heap.size());
+		assertEquals(4, heap.size());
 		assertEquals(28, (int)heap.peek());
 		
 		heap.remove();
 		
-		assertEquals(1, heap.size());
+		assertEquals(3, heap.size());
+		assertEquals(32, (int)heap.peek());
+
+		heap.remove();
+		
+		assertEquals(2, heap.size());
 		assertEquals(56, (int)heap.peek());
+		
+		heap.remove();
+		
+		assertEquals(1, heap.size());
+		assertEquals(96, (int)heap.peek());
 		assertFalse(heap.isEmpty());
 		
 		heap.remove();
@@ -135,23 +174,68 @@ public class ArrayHeapTest {
 		
 		heap.clear();
 		
-		Integer[] items = {20, 5, 10, 12, 15, 8, 2, 6, 2, 9};
+		final int HEAP_SIZE = 200000;
 		
-		heap = new ArrayMinHeap<Integer>(items);
-		heap.trimToSize();
+		assertNotNull(heap);
 		
-		assertEquals(10, heap.size());
-		assertFalse(heap.isEmpty());
-		assertEquals(2, (int)heap.peek());
+		for (int i = HEAP_SIZE; i > 0; i--) {
+			heap.add(i);
+		}
 		
-		ArrayHeap.minHeapify(items);
-		ArrayHeap.maxHeapify(items);
-		ArrayHeap.minHeapify(items);
+		assertEquals(HEAP_SIZE, heap.size());
+		
+		Integer a = heap.remove();
+		
+		while (!heap.isEmpty()) {
+			Integer b = heap.remove();
+			
+			assertTrue (a.compareTo(b) <= 0);
+			
+			a = b;
+		}
+		
+		assertEquals(0, heap.size());
+		assertNull(heap.peek());
+		assertTrue(heap.isEmpty());
+		
+		heap.clear();
+		
+		assertNotNull(heap);
+		
+		for (int i = HEAP_SIZE; i > 0; i--) {
+			heap.add(i);
+		}
+		
+		assertEquals(HEAP_SIZE, heap.size());
+		
+		heap.sort();
+		
+		heap.heapify();
+		
+		a = heap.remove();
+		
+		while (!heap.isEmpty()) {
+			Integer b = heap.remove();
+			
+			assertTrue (a.compareTo(b) <= 0);
+			
+			a = b;
+		}
+		
+		assertEquals(0, heap.size());
+		assertNull(heap.peek());
+		assertTrue(heap.isEmpty());
+		
+		heap.clear();
+		
+		assertNotNull(heap);
+		
+		System.out.println("done.");
 	}
 	
 	@Test
 	public final void testBigMaxHeap() {
-		final int HEAP_SIZE = 200000;
+/*		final int HEAP_SIZE = 200000;
 		Integer[] items = new Integer[HEAP_SIZE];
 		
 		assertNotNull(items);
@@ -161,13 +245,13 @@ public class ArrayHeapTest {
 			items[i] = i;
 		}
 		
-		ArrayHeap.minHeapify(items);
-		ArrayHeap.maxHeapify(items);
-		ArrayHeap.minHeapify(items);
+		LinkedHeap.minHeapify(items);
+		LinkedHeap.maxHeapify(items);
+		LinkedHeap.minHeapify(items);
 		
-		ArrayHeap<Integer> heap = new ArrayMaxHeap<Integer>(items);
+		LinkedHeap<Integer> heap = new LinkedMaxHeap<Integer>(items);
 		
-		ArrayHeap.maxHeapSort(items, true);
+		LinkedHeap.maxHeapSort(items, true);
 		heap.sort();
 
 		assertNotNull(heap);
@@ -176,11 +260,11 @@ public class ArrayHeapTest {
 		for (int i = 0; i < items.length - 1; i++) {
 			assertTrue(items[i].compareTo(items[i + 1]) <= 0);
 		}
-	}
+*/	}
 	
 	@Test
 	public final void testBigMinHeap() {
-		final int HEAP_SIZE = 200000;
+/*		final int HEAP_SIZE = 200000;
 		Integer[] items = new Integer[HEAP_SIZE];
 		
 		assertNotNull(items);
@@ -190,13 +274,13 @@ public class ArrayHeapTest {
 			items[i] = i;
 		}
 		
-		ArrayHeap.minHeapify(items);
-		ArrayHeap.maxHeapify(items);
-		ArrayHeap.minHeapify(items);
+		LinkedHeap.minHeapify(items);
+		LinkedHeap.maxHeapify(items);
+		LinkedHeap.minHeapify(items);
 		
-		ArrayHeap<Integer> heap = new ArrayMinHeap<Integer>(items);
+		LinkedHeap<Integer> heap = new LinkedMinHeap<Integer>(items);
 		
-		ArrayHeap.minHeapSort(items, false);
+		LinkedHeap.minHeapSort(items, false);
 		heap.sort();
 
 		assertNotNull(heap);
@@ -205,5 +289,5 @@ public class ArrayHeapTest {
 		for (int i = 0; i < items.length - 1; i++) {
 			assertTrue(items[i].compareTo(items[i + 1]) >= 0);
 		}
-	}
+*/	}
 }

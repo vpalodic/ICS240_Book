@@ -9,13 +9,73 @@ import org.junit.Test;
 
 public class BalancedSetTest {
 	@Test
-	public void testRemoveSmallComparatorSet() {
+	public void testRemoveSets() {
 		final long SEED = 20170815;
+		final int MINIMUM = 8192;
+		final int NUM_NUMBERS = 1_000_000;
+		
+		long start = System.nanoTime();
+		System.out.println();
+		System.out.println("Begin BalancedSet Removing Test...");
+		System.out.println();
+		System.out.println("Testing Removing String Sets Using A Comparator<String>");
+		System.out.println();
+		testRemoveComparatorStringSet(SEED, MINIMUM, NUM_NUMBERS);
+		System.out.println();
+		System.out.println("Testing Removing String Sets Using Natural Ordering");
+		System.out.println();
+		testRemoveStringSet(SEED, MINIMUM, NUM_NUMBERS);
+		System.out.println();
+		System.out.println("Testing Removing Integer Sets Using A Comparator<Integer>");
+		System.out.println();
+		testRemoveComparatorIntegerSet(SEED, MINIMUM, NUM_NUMBERS);
+		System.out.println();
+		System.out.println("Testing Removing Integer Sets Using Natural Ordering");
+		System.out.println();
+		testRemoveIntegerSet(SEED, MINIMUM, NUM_NUMBERS);
+		System.out.println();
+		long elapsed = System.nanoTime() - start;
+		System.out.println(String.format("It took %,f seconds to perform the BalancedSet Removing Test!", (elapsed / 1E9)));
+		System.out.println();
+	}
+	
+	@Test
+	public void testSearchSets() {
+		final long SEED = 20170815;
+		final int MINIMUM = 8192;
+		final int NUM_NUMBERS = 1_000_000;
+		
+		long start = System.nanoTime();
+		System.out.println();
+		System.out.println("Begin BalancedSet Searching Test...");
+		System.out.println();
+		System.out.println("Testing Searching String Sets Using A Comparator<String>");
+		System.out.println();
+		testSearchComparatorStringSet(SEED, MINIMUM, NUM_NUMBERS);
+		System.out.println();
+		System.out.println("Testing Searching String Sets Using Natural Ordering");
+		System.out.println();
+		testSearchStringSet(SEED, MINIMUM, NUM_NUMBERS);
+		System.out.println();
+		System.out.println("Testing Searching Integer Sets Using A Comparator<Integer>");
+		System.out.println();
+		testSearchComparatorIntegerSet(SEED, MINIMUM, NUM_NUMBERS);
+		System.out.println();
+		System.out.println("Testing Searching Integer Sets Using Natural Ordering");
+		System.out.println();
+		testSearchIntegerSet(SEED, MINIMUM, NUM_NUMBERS);
+		System.out.println();
+		long elapsed = System.nanoTime() - start;
+		System.out.println(String.format("It took %,f seconds to perform the BalancedSet Searching Test!", (elapsed / 1E9)));
+		System.out.println();
+	}
+	
+	private void testRemoveComparatorIntegerSet(long seed, int min, int num) {
+		final long SEED = seed;
 		final Random random = new Random(SEED);
 		
-		final int MINIMUM = 1;
-		final int NUM_NUMBERS = 99;
-		final int NULL_LOOP = 3;
+		final int MINIMUM = min;
+		final int NUM_NUMBERS = num;
 		
 		BalancedSet<Integer> intSet = new BalancedSet<Integer>(MINIMUM, new Comparator<Integer>() {
 			@Override
@@ -36,65 +96,613 @@ public class BalancedSetTest {
 		assertNotNull(intSet);
 		
 		int i = 0;
+		int j = 0;
+		long start = 0;
+		long elapsed = 0;
+		
+		System.out.println(String.format("Building a BalancedSet with a Comparator<Integers> of %,d Integers using a random number generator...", NUM_NUMBERS));
+
+		start = System.nanoTime();
 		
 		while (i < NUM_NUMBERS) {
-			int nextNumber = random.nextInt(NUM_NUMBERS); 
+			int nextNumber = random.nextInt(NUM_NUMBERS);
+			j++;
 			if (intSet.add(nextNumber)) {
 				i++;
-				System.out.println(String.format("%d has been added to the BalancedSet<T>", nextNumber));
-				intSet.print(0);
 			}
 		}
+		
+		elapsed = System.nanoTime() - start;
+
+		System.out.println(String.format("It took %,f seconds to make %,03d random generator calls to create the set of %,d numbers.", elapsed / 1E9, j, NUM_NUMBERS));
+		
+		j = 0;
+		
+		start = System.nanoTime();
 		
 		while (intSet.getNumberOfItems() > 0) {
 			int nextNumber = random.nextInt(NUM_NUMBERS); 
-			if (intSet.remove(nextNumber)) {
-				System.out.println(String.format("%d has been removed from the BalancedSet<T>", nextNumber));
-				intSet.print(0);
-			}
+			intSet.remove(nextNumber);
+			j++;
 		}
 		
-		i = 0;
-		int j = 0;
+		elapsed = System.nanoTime() - start;
 		
-		while (i < NUM_NUMBERS) {
+		System.out.println(String.format("It took %,f seconds to make %,03d random generator calls to delete the set of %,d numbers.", elapsed / 1E9, j, NUM_NUMBERS));
+		
+		i = 1;
+		j = 0;
+		
+		System.out.println(String.format("Building a BalancedSet with a Comparator<Integers> of %,d Integers using a random number generator...", NUM_NUMBERS));
+
+		start = System.nanoTime();
+		
+		while (i <= NUM_NUMBERS) {
 			int nextNumber = random.nextInt(NUM_NUMBERS); 
 			
-			if (i % NULL_LOOP == 0) {
-				if (intSet.add(null)) {
-					String temp = null;
-					System.out.println(String.format("%s has been added to the BalancedSet<T>", temp));
-				}
-			}
 			if (intSet.add(nextNumber)) {
 				i++;
-				System.out.println(String.format("%d has been added to the BalancedSet<T>", nextNumber));
-				intSet.print(0);
 			}
 			j++;
 		}
+		
+		elapsed = System.nanoTime() - start;
+		
+		intSet.add(null);
+		
+		System.out.println(String.format("It took %,f seconds to make %,03d random generator calls to create the set of %,d numbers.", elapsed / 1E9, j, NUM_NUMBERS));
 
+		start = System.nanoTime();
 		assertTrue(intSet.contains(null));
+		elapsed = System.nanoTime() - start;
+		
+		System.out.println(String.format("It took %,f seconds to perform a search for null in a sea of %,d numbers.", (elapsed / 1E9), NUM_NUMBERS));
+		
+		start = System.nanoTime();
 		
 		for (i = 0; i < NUM_NUMBERS; i++) {
 			assertTrue(intSet.contains(i));
 		}
 		
-		i = 0;
+		elapsed = System.nanoTime() - start;
+		
+		System.out.println(String.format("It took %,f seconds to perform %,d searches for all %,d numbers.", (elapsed / 1E9), NUM_NUMBERS, NUM_NUMBERS));
+		
+		j = 0;
+		
+		intSet.remove(null);
+		
+		start = System.nanoTime();
 		
 		while (intSet.getNumberOfItems() > 0) {
 			int nextNumber = random.nextInt(NUM_NUMBERS);
 			
-			if (i++ % NULL_LOOP == 0 && intSet.remove(null)) {
-				String temp = null;
-				System.out.println(String.format("%s has been removed from the BalancedSet<T>", temp));
-			}
-			
-			if (intSet.remove(nextNumber)) {
-				System.out.println(String.format("%d has been removed from the BalancedSet<T>", nextNumber));
-				intSet.print(0);
-			}
+			intSet.remove(nextNumber);
+			j++;
 		}
+		
+		elapsed = System.nanoTime() - start;
+		
+		System.out.println(String.format("It took %,f seconds to make %,03d random generator calls to delete the set of %,d numbers.", elapsed / 1E9, j, NUM_NUMBERS));
 	}
 	
+	private void testRemoveComparatorStringSet(long seed, int min, int num) {
+		final long SEED = seed;
+		final Random random = new Random(SEED);
+		
+		final int MINIMUM = min;
+		final int NUM_NUMBERS = num;
+		
+		BalancedSet<String> intSet = new BalancedSet<String>(MINIMUM, new Comparator<String>() {
+			@Override
+			public int compare(String a, String b) {
+				int answer = -1;
+				
+				if (a == null && b == null) {
+					answer = 0;
+				} else if ((a == null) ^ (b == null)) {
+					answer = (a == null) ? -1 : 1;
+				} else {
+					answer = a.compareTo(b);
+				}
+				return answer;
+			}
+		});
+
+		assertNotNull(intSet);
+		
+		int i = 0;
+		int j = 0;
+		long start = 0;
+		long elapsed = 0;
+		
+		System.out.println(String.format("Building a BalancedSet with a Comparator<String> of %,d Strings using a random number generator...", NUM_NUMBERS));
+		
+		start = System.nanoTime();
+		
+		while (i < NUM_NUMBERS) {
+			int nextNumber = random.nextInt(NUM_NUMBERS);
+			j++;
+			if (intSet.add(String.format("%010d", nextNumber))) {
+				i++;
+			}
+		}
+		
+		elapsed = System.nanoTime() - start;
+		
+		System.out.println(String.format("It took %,f seconds to make %,03d random generator calls to create the set of %,d numbers.", elapsed / 1E9, j, NUM_NUMBERS));
+		
+		j = 0;
+		
+		start = System.nanoTime();
+		
+		while (intSet.getNumberOfItems() > 0) {
+			int nextNumber = random.nextInt(NUM_NUMBERS); 
+			intSet.remove(String.format("%010d", nextNumber));
+			j++;
+		}
+		
+		elapsed = System.nanoTime() - start;
+		
+		System.out.println(String.format("It took %,f seconds to make %,03d random generator calls to delete the set of %,d numbers.", elapsed / 1E9, j, NUM_NUMBERS));
+
+		i = 1;
+		j = 0;
+		
+		System.out.println(String.format("Building a BalancedSet with a Comparator<String> of %,d Strings using a random number generator...", NUM_NUMBERS));
+		
+		start = System.nanoTime();
+		
+		while (i <= NUM_NUMBERS) {
+			int nextNumber = random.nextInt(NUM_NUMBERS); 
+			
+			if (intSet.add(String.format("%010d", nextNumber))) {
+				i++;
+			}
+			j++;
+		}
+		
+		elapsed = System.nanoTime() - start;
+		
+		intSet.add(null);
+		
+		System.out.println(String.format("It took %,f seconds to make %,03d random generator calls to create the set of %,d numbers.", elapsed / 1E9, j, NUM_NUMBERS));
+
+		start = System.nanoTime();
+		assertTrue(intSet.contains(null));
+		elapsed = System.nanoTime() - start;
+		
+		System.out.println(String.format("It took %,f seconds to perform a search for null in a sea of %,d numbers.", (elapsed / 1E9), NUM_NUMBERS));
+		
+		start = System.nanoTime();	
+		
+		for (i = 0; i < NUM_NUMBERS; i++) {
+			assertTrue(intSet.contains(String.format("%010d", i)));
+		}
+		
+		elapsed = System.nanoTime() - start;
+		
+		System.out.println(String.format("It took %,f seconds to perform %,d searches for all %,d numbers.", (elapsed / 1E9), NUM_NUMBERS, NUM_NUMBERS));
+		
+		j = 0;
+		
+		intSet.remove(null);
+		
+		start = System.nanoTime();
+		
+		while (intSet.getNumberOfItems() > 0) {
+			int nextNumber = random.nextInt(NUM_NUMBERS);
+			
+			intSet.remove(String.format("%010d", nextNumber));
+			j++;
+		}
+		
+		elapsed = System.nanoTime() - start;
+		
+		System.out.println(String.format("It took %,f seconds to make %,03d random generator calls to delete the set of %,d numbers.", elapsed / 1E9, j, NUM_NUMBERS));
+	}
+	
+	private void testRemoveIntegerSet(long seed, int min, int num) {
+		final long SEED = seed;
+		final Random random = new Random(SEED);
+		
+		final int MINIMUM = min;
+		final int NUM_NUMBERS = num;
+		
+		BalancedSet<Integer> intSet = new BalancedSet<Integer>(MINIMUM);
+
+		assertNotNull(intSet);
+		
+		int i = 0;
+		int j = 0;
+		long start = 0;
+		long elapsed = 0;
+		
+		System.out.println(String.format("Building a BalancedSet of %,d Integerss using a random number generator...", NUM_NUMBERS));
+
+		start = System.nanoTime();	
+		
+		while (i < NUM_NUMBERS) {
+			int nextNumber = random.nextInt(NUM_NUMBERS);
+			j++;
+			if (intSet.add(nextNumber)) {
+				i++;
+			}
+		}
+		
+		elapsed = System.nanoTime() - start;
+		
+		System.out.println(String.format("It took %,f seconds to make %,03d random generator calls to create the set of %,d numbers.", elapsed / 1E9, j, NUM_NUMBERS));
+		
+		j = 0;
+		
+		start = System.nanoTime();	
+		
+		while (intSet.getNumberOfItems() > 0) {
+			int nextNumber = random.nextInt(NUM_NUMBERS); 
+			intSet.remove(nextNumber);
+			j++;
+		}
+		
+		elapsed = System.nanoTime() - start;
+		
+		System.out.println(String.format("It took %,f seconds to make %,03d random generator calls to delete the set of %,d numbers.", elapsed / 1E9, j, NUM_NUMBERS));
+		
+		i = 1;
+		j = 0;
+		
+		System.out.println(String.format("Building a BalancedSet of %,d Integers using a random number generator...", NUM_NUMBERS));
+		
+		start = System.nanoTime();	
+		
+		while (i <= NUM_NUMBERS) {
+			int nextNumber = random.nextInt(NUM_NUMBERS); 
+			
+			if (intSet.add(nextNumber)) {
+				i++;
+			}
+			j++;
+		}
+		
+		elapsed = System.nanoTime() - start;
+		
+		System.out.println(String.format("It took %,f seconds to make %,03d random generator calls to create the set of %,d numbers.", elapsed / 1E9, j, NUM_NUMBERS));
+
+		start = System.nanoTime();
+		
+		for (i = 0; i < NUM_NUMBERS; i++) {
+			assertTrue(intSet.contains(i));
+		}
+		
+		elapsed = System.nanoTime() - start;
+				
+		System.out.println(String.format("It took %,f seconds to perform %,d searches for all %,d numbers.", (elapsed / 1E9), NUM_NUMBERS, NUM_NUMBERS));
+		
+		j = 0;
+		
+		start = System.nanoTime();
+		
+		while (intSet.getNumberOfItems() > 0) {
+			int nextNumber = random.nextInt(NUM_NUMBERS);
+			
+			intSet.remove(nextNumber);
+			j++;
+		}
+		
+		elapsed = System.nanoTime() - start;
+		
+		System.out.println(String.format("It took %,f seconds to make %,03d random generator calls to delete the set of %,d numbers.", elapsed / 1E9, j, NUM_NUMBERS));
+	}
+	
+	private void testRemoveStringSet(long seed, int min, int num) {
+		final long SEED = seed;
+		final Random random = new Random(SEED);
+		
+		final int MINIMUM = min;
+		final int NUM_NUMBERS = num;
+		
+		BalancedSet<String> intSet = new BalancedSet<String>(MINIMUM);
+
+		assertNotNull(intSet);
+		
+		int i = 0;
+		int j = 0;
+		long start = 0;
+		long elapsed = 0;
+
+		System.out.println(String.format("Building a BalancedSet of %,d Strings using a random number generator...", NUM_NUMBERS));
+		
+		start = System.nanoTime();	
+		
+		while (i < NUM_NUMBERS) {
+			int nextNumber = random.nextInt(NUM_NUMBERS);
+			j++;
+			if (intSet.add(String.format("%,010d", nextNumber))) {
+				i++;
+			}
+		}
+		
+		elapsed = System.nanoTime() - start;
+		
+		System.out.println(String.format("It took %,f seconds to make %,03d random generator calls to create the set of %,d numbers.", elapsed / 1E9, j, NUM_NUMBERS));
+		
+		j = 0;
+		
+		start = System.nanoTime();	
+		
+		while (intSet.getNumberOfItems() > 0) {
+			int nextNumber = random.nextInt(NUM_NUMBERS); 
+			intSet.remove(String.format("%,010d", nextNumber));
+			j++;
+		}
+		
+		elapsed = System.nanoTime() - start;
+		
+		System.out.println(String.format("It took %,f seconds to make %,03d random generator calls to delete the set of %,d numbers.", elapsed / 1E9, j, NUM_NUMBERS));
+		
+		i = 1;
+		j = 0;
+		
+		System.out.println(String.format("Building a BalancedSet of %,d Strings using a random number generator...", NUM_NUMBERS));
+		
+		start = System.nanoTime();	
+		
+		while (i <= NUM_NUMBERS) {
+			int nextNumber = random.nextInt(NUM_NUMBERS); 
+			
+			if (intSet.add(String.format("%,010d", nextNumber))) {
+				i++;
+			}
+			j++;
+		}
+		
+		elapsed = System.nanoTime() - start;
+		
+		System.out.println(String.format("It took %,f seconds to make %,03d random generator calls to create the set of %,d numbers.", elapsed / 1E9, j, NUM_NUMBERS));
+
+		start = System.nanoTime();	
+		
+		for (i = 0; i < NUM_NUMBERS; i++) {
+			assertTrue(intSet.contains(String.format("%,010d", i)));
+		}
+		
+		elapsed = System.nanoTime() - start;
+		
+		System.out.println(String.format("It took %,f seconds to perform %,d searches for all %,d numbers.", (elapsed / 1E9), NUM_NUMBERS, NUM_NUMBERS));
+		
+		j = 0;
+		
+		start = System.nanoTime();
+		
+		while (intSet.getNumberOfItems() > 0) {
+			int nextNumber = random.nextInt(NUM_NUMBERS);
+			
+			intSet.remove(String.format("%,010d", nextNumber));
+			j++;
+		}
+
+		elapsed = System.nanoTime() - start;
+		
+		System.out.println(String.format("It took %,f seconds to make %,03d random generator calls to delete the set of %,d numbers.", elapsed / 1E9, j, NUM_NUMBERS));
+	}
+	
+	private void testSearchComparatorStringSet(long seed, int min, int num) {
+		final long SEED = seed;
+		final Random random = new Random(SEED);
+		
+		final int MINIMUM = min;
+		final int NUM_NUMBERS = num;
+		
+		BalancedSet<String> intSet = new BalancedSet<String>(MINIMUM, new Comparator<String>() {
+			@Override
+			public int compare(String a, String b) {
+				int answer = -1;
+				
+				if (a == null && b == null) {
+					answer = 0;
+				} else if ((a == null) ^ (b == null)) {
+					answer = (a == null) ? -1 : 1;
+				} else {
+					answer = a.compareTo(b);
+				}
+				return answer;
+			}
+		});
+
+		long start = 0;
+		long elapsed = 0;
+		
+		assertNotNull(intSet);
+		
+		int i = 0;
+		int j = 0;
+		
+		System.out.println(String.format("Building a BalancedSet with a Comparator<String> of %,d Strings using a random number generator...", NUM_NUMBERS));
+		
+		start = System.nanoTime();
+		
+		while (i < NUM_NUMBERS) {
+			int nextNumber = random.nextInt(NUM_NUMBERS);
+			j++;
+			if (intSet.add(String.format("%,010d", nextNumber))) {
+				i++;
+			}
+		}
+		
+		elapsed = System.nanoTime() - start;
+		
+		System.out.println(String.format("It took %,f seconds to make %,03d random generator calls to create the set of %,d numbers.", elapsed / 1E9, j, NUM_NUMBERS));
+		
+		intSet.add(null);
+		
+		start = System.nanoTime();
+		assertTrue(intSet.contains(null));
+		elapsed = System.nanoTime() - start;
+		
+		System.out.println(String.format("It took %,f seconds to perform a search for null in a sea of %,d numbers.", (elapsed / 1E9), NUM_NUMBERS));
+		
+		start = System.nanoTime();
+		
+		for (i = 0; i < NUM_NUMBERS; i++) {
+			assertTrue(intSet.contains(String.format("%,010d", i)));
+		}
+		
+		elapsed = System.nanoTime() - start;
+		
+		System.out.println(String.format("It took %,f seconds to perform %,d searches for all %,d numbers.", (elapsed / 1E9), NUM_NUMBERS, NUM_NUMBERS));
+	}
+
+	private void testSearchStringSet(long seed, int min, int num) {
+		final long SEED = seed;
+		final Random random = new Random(SEED);
+		
+		final int MINIMUM = min;
+		final int NUM_NUMBERS = num;
+		
+		BalancedSet<String> intSet = new BalancedSet<String>(MINIMUM);
+
+		long start = 0;
+		long elapsed = 0;
+		
+		assertNotNull(intSet);
+		
+		int i = 0;
+		int j = 0;
+		
+		System.out.println(String.format("Building a BalancedSet of %,d Strings using a random number generator...", NUM_NUMBERS));
+		
+		start = System.nanoTime();
+		
+		while (i < NUM_NUMBERS) {
+			int nextNumber = random.nextInt(NUM_NUMBERS);
+			j++;
+			if (intSet.add(String.format("%,010d", nextNumber))) {
+				i++;
+			}
+		}
+		
+		elapsed = System.nanoTime() - start;
+		
+		System.out.println(String.format("It took %,f seconds to make %,03d random generator calls to create the set of %,d numbers.", elapsed / 1E9, j, NUM_NUMBERS));
+		
+		start = System.nanoTime();
+		
+		for (i = 0; i < NUM_NUMBERS; i++) {
+			assertTrue(intSet.contains(String.format("%,010d", i)));
+		}
+		
+		elapsed = System.nanoTime() - start;
+		
+		System.out.println(String.format("It took %,f seconds to perform %,d searches for all %,d numbers.", (elapsed / 1E9), NUM_NUMBERS, NUM_NUMBERS));
+	}
+	
+	private void testSearchComparatorIntegerSet(long seed, int min, int num) {
+		final long SEED = seed;
+		final Random random = new Random(SEED);
+		
+		final int MINIMUM = min;
+		final int NUM_NUMBERS = num;
+		
+		BalancedSet<Integer> intSet = new BalancedSet<Integer>(MINIMUM, new Comparator<Integer>() {
+			@Override
+			public int compare(Integer a, Integer b) {
+				int answer = -1;
+				
+				if (a == null && b == null) {
+					answer = 0;
+				} else if ((a == null) ^ (b == null)) {
+					answer = (a == null) ? -1 : 1;
+				} else {
+					answer = a.compareTo(b);
+				}
+				return answer;
+			}
+		});
+
+		long start = 0;
+		long elapsed = 0;
+		
+		assertNotNull(intSet);
+		
+		int i = 0;
+		int j = 0;
+		
+		System.out.println(String.format("Building a BalancedSet with a Comparator<Integer> of %,d Integers using a random number generator...", NUM_NUMBERS));
+		
+		start = System.nanoTime();
+		
+		while (i < NUM_NUMBERS) {
+			int nextNumber = random.nextInt(NUM_NUMBERS);
+			j++;
+			if (intSet.add(nextNumber)) {
+				i++;
+			}
+		}
+		
+		elapsed = System.nanoTime() - start;
+		
+		System.out.println(String.format("It took %,f seconds to make %,03d random generator calls to create the set of %,d numbers.", elapsed / 1E9, j, NUM_NUMBERS));
+		
+		intSet.add(null);
+		
+		start = System.nanoTime();
+		assertTrue(intSet.contains(null));
+		elapsed = System.nanoTime() - start;
+		
+		System.out.println(String.format("It took %,f seconds to perform a search for null in a sea of %,d numbers.", (elapsed / 1E9), NUM_NUMBERS));
+		
+		start = System.nanoTime();
+		
+		for (i = 0; i < NUM_NUMBERS; i++) {
+			assertTrue(intSet.contains(i));
+		}
+		
+		elapsed = System.nanoTime() - start;
+		
+		System.out.println(String.format("It took %,f seconds to perform %,d searches for all %,d numbers.", (elapsed / 1E9), NUM_NUMBERS, NUM_NUMBERS));
+	}
+
+	private void testSearchIntegerSet(long seed, int min, int num) {
+		final long SEED = seed;
+		final Random random = new Random(SEED);
+		
+		final int MINIMUM = min;
+		final int NUM_NUMBERS = num;
+		
+		long start = 0;
+		long elapsed = 0;
+		
+		BalancedSet<Integer> intSet = new BalancedSet<Integer>(MINIMUM);
+
+		assertNotNull(intSet);
+		
+		int i = 0;
+		int j = 0;
+		
+		System.out.println(String.format("Building a BalancedSet of %,d Integers using a random number generator...", NUM_NUMBERS));
+		
+		start = System.nanoTime();
+		
+		while (i < NUM_NUMBERS) {
+			int nextNumber = random.nextInt(NUM_NUMBERS);
+			j++;
+			if (intSet.add(nextNumber)) {
+				i++;
+			}
+		}
+		
+		elapsed = System.nanoTime() - start;
+		
+		System.out.println(String.format("It took %,f seconds to make %,03d random generator calls to create the set of %,d numbers.", elapsed / 1E9, j, NUM_NUMBERS));
+		
+		start = System.nanoTime();
+		
+		for (i = 0; i < NUM_NUMBERS; i++) {
+			assertTrue(intSet.contains(i));
+		}
+		
+		elapsed = System.nanoTime() - start;
+		
+		System.out.println(String.format("It took %,f seconds to perform %,d searches for all %,d numbers.", (elapsed / 1E9), NUM_NUMBERS, NUM_NUMBERS));
+	}
 }

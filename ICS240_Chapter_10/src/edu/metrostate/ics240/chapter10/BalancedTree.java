@@ -159,7 +159,7 @@ public class BalancedTree<T extends Comparable<T>> implements Cloneable {
 		boolean answer = true;
 
 		if (comparator == null && item == null) {
-			throw new NullPointerException("The item cannot be null when a Comparator<T> has not been B-tree.");
+			throw new NullPointerException("The item cannot be null when a Comparator<T> has not been set.");
 		}
 
 		answer = looseAdd(item);
@@ -311,13 +311,33 @@ public class BalancedTree<T extends Comparable<T>> implements Cloneable {
 	private int[] firstGreaterThanOrEqualTo(T target) {
 		int targetIndex = numberOfItems;
 		int compareResult = -1;
+		final int THRESHOLD = 8;
 
-		for (int i = 0; i < numberOfItems; i++) {
-			compareResult = compareT((T) items[i], target);
+		if (numberOfItems < THRESHOLD) {
+			for (int i = 0; i < numberOfItems; i++) {
+				compareResult = compareT((T) items[i], target);
+	
+				if (compareResult >= 0) {
+					targetIndex = i;
+					break;
+				}
+			}
+		} else {
+			int left = 0, right = numberOfItems - 1;
+			
+			while (left <= right) {
+				int mid = left + (right - left) / 2;
+				compareResult = compareT((T) items[mid], target);
 
-			if (compareResult >= 0) {
-				targetIndex = i;
-				break;
+				if (compareResult == 0) {
+					targetIndex = mid;
+					break;
+				} else if (compareResult < 0) {
+					left = mid + 1;
+				} else {
+					targetIndex = mid; // We can't break yet.
+					right = mid - 1;
+				}
 			}
 		}
 

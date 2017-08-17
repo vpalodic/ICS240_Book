@@ -11,8 +11,8 @@ public class BalancedTreeTest {
 	@Test
 	public void testPrintTrees() {
 		final long SEED = 20170815;
-		final int MINIMUM = 3;
-		final int NUM_NUMBERS = 64;
+		final int MINIMUM = 10;
+		final int NUM_NUMBERS = 1024;
 		
 		long start = System.nanoTime();
 		
@@ -53,8 +53,8 @@ public class BalancedTreeTest {
 	@Test
 	public void testRemoveTrees() {
 		final long SEED = 20170815;
-		final int MINIMUM = 9;
-		final int NUM_NUMBERS = 1_000_000;
+		final int MINIMUM = 16;
+		final int NUM_NUMBERS = 100_000;
 		
 		long start = System.nanoTime();
 		System.out.println();
@@ -84,8 +84,8 @@ public class BalancedTreeTest {
 	@Test
 	public void testSearchTrees() {
 		final long SEED = 20170815;
-		final int MINIMUM = 9;
-		final int NUM_NUMBERS = 1_000_000;
+		final int MINIMUM = 16;
+		final int NUM_NUMBERS = 100_000;
 		
 		long start = System.nanoTime();
 		System.out.println();

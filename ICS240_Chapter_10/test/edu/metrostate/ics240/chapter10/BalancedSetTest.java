@@ -11,8 +11,8 @@ public class BalancedSetTest {
 	@Test
 	public void testPrintSets() {
 		final long SEED = 20170815;
-		final int MINIMUM = 12;
-		final int NUM_NUMBERS = 4096;
+		final int MINIMUM = 10;
+		final int NUM_NUMBERS = 1024;
 		
 		long start = System.nanoTime();
 		
@@ -53,8 +53,8 @@ public class BalancedSetTest {
 	@Test
 	public void testRemoveSets() {
 		final long SEED = 20170815;
-		final int MINIMUM = 19;
-		final int NUM_NUMBERS = 1_000_000;
+		final int MINIMUM = 16;
+		final int NUM_NUMBERS = 100_000;
 		
 		long start = System.nanoTime();
 		System.out.println();
@@ -84,8 +84,8 @@ public class BalancedSetTest {
 	@Test
 	public void testSearchSets() {
 		final long SEED = 20170815;
-		final int MINIMUM = 19;
-		final int NUM_NUMBERS = 1_000_000;
+		final int MINIMUM = 16;
+		final int NUM_NUMBERS = 100_000;
 		
 		long start = System.nanoTime();
 		System.out.println();

@@ -9,9 +9,51 @@ import org.junit.Test;
 
 public class BalancedTreeTest {
 	@Test
+	public void testPrintTrees() {
+		final long SEED = 20170815;
+		final int MINIMUM = 3;
+		final int NUM_NUMBERS = 64;
+		
+		long start = System.nanoTime();
+		
+		System.out.println();
+		System.out.println("Begin BalancedTree Printint Test...");
+		System.out.println();
+		System.out.println("Testing Printing String Trees Using A Comparator<String>");
+		System.out.println();
+		
+		testPrintComparatorStringTree(SEED, MINIMUM, NUM_NUMBERS);
+		
+		System.out.println();
+		System.out.println("Testing Printing String Trees Using Natural Ordering");
+		System.out.println();
+		
+		testPrintStringTree(SEED, MINIMUM, NUM_NUMBERS);
+		
+		System.out.println();
+		System.out.println("Testing Printing Integer Trees Using A Comparator<Integer>");
+		System.out.println();
+		
+		testPrintComparatorIntegerTree(SEED, MINIMUM, NUM_NUMBERS);
+		
+		System.out.println();
+		System.out.println("Testing Printing Integer Trees Using Natural Ordering");
+		System.out.println();
+		
+		testPrintIntegerTree(SEED, MINIMUM, NUM_NUMBERS);
+		
+		System.out.println();
+		
+		long elapsed = System.nanoTime() - start;
+		
+		System.out.println(String.format("It took %,f seconds to perform the BalancedTree Printing Test!", (elapsed / 1E9)));
+		System.out.println();
+	}
+	
+	@Test
 	public void testRemoveTrees() {
 		final long SEED = 20170815;
-		final int MINIMUM = 8192;
+		final int MINIMUM = 9;
 		final int NUM_NUMBERS = 1_000_000;
 		
 		long start = System.nanoTime();
@@ -42,7 +84,7 @@ public class BalancedTreeTest {
 	@Test
 	public void testSearchTrees() {
 		final long SEED = 20170815;
-		final int MINIMUM = 8192;
+		final int MINIMUM = 9;
 		final int NUM_NUMBERS = 1_000_000;
 		
 		long start = System.nanoTime();
@@ -68,6 +110,266 @@ public class BalancedTreeTest {
 		long elapsed = System.nanoTime() - start;
 		System.out.println(String.format("It took %,f seconds to perform the BalancedTree Searching Test!", (elapsed / 1E9)));
 		System.out.println();
+	}
+	
+	private void testPrintComparatorStringTree(long seed, int min, int num) {
+		final int MINIMUM = min;
+		final int NUM_NUMBERS = num;
+		
+		BalancedTree<String> intTree = new BalancedTree<String>(MINIMUM, new Comparator<String>() {
+			@Override
+			public int compare(String a, String b) {
+				int answer = -1;
+				
+				if (a == null && b == null) {
+					answer = 0;
+				} else if ((a == null) ^ (b == null)) {
+					answer = (a == null) ? -1 : 1;
+				} else {
+					answer = a.compareTo(b);
+				}
+				return answer;
+			}
+		});
+
+		long start = 0;
+		long elapsed = 0;
+		
+		assertNotNull(intTree);
+		
+		int i = NUM_NUMBERS;
+		int j = 0;
+		
+		System.out.println(String.format("Building a BalancedTree with a Comparator<String> of %,d Strings using sequential calls in reverse.", NUM_NUMBERS));
+		
+		start = System.nanoTime();
+		
+		while (i > 0) {
+			int nextNumber = i;
+			j++;
+			if (intTree.add(String.format("%,d", nextNumber))) {
+				i--;
+			}
+		}
+		
+		elapsed = System.nanoTime() - start;
+		
+		System.out.println(String.format("It took %,f seconds to make %,03d sequential calls in reverse to create the tree of %,d numbers.", elapsed / 1E9, j, NUM_NUMBERS));
+		
+		intTree.add(null);
+		
+		start = System.nanoTime();
+		assertTrue(intTree.contains(null));
+		elapsed = System.nanoTime() - start;
+		
+		System.out.println(String.format("It took %,f seconds to perform a search for null in a sea of %,d numbers.", (elapsed / 1E9), NUM_NUMBERS));
+		
+		start = System.nanoTime();
+		
+		for (i = NUM_NUMBERS, j = 0; i > 0; i--) {
+			if (intTree.contains(String.format("%,d", i))) {
+				j++;
+			}
+		}
+		
+		elapsed = System.nanoTime() - start;
+		
+		System.out.println(String.format("It took %,f seconds to perform %,d searches with %,d hits for all %,d numbers.", (elapsed / 1E9), NUM_NUMBERS, j, NUM_NUMBERS));
+		
+		System.out.println();
+		System.out.println("The wonderful B-tree inorder traversal:");
+		System.out.println();
+		intTree.inorderPrint();
+		System.out.println();
+		
+		System.out.println();
+		System.out.println("The wonderful B-tree preorder traversal:");
+		System.out.println();
+		intTree.print(0);
+	}
+
+	private void testPrintStringTree(long seed, int min, int num) {
+		final int MINIMUM = min;
+		final int NUM_NUMBERS = num;
+		
+		BalancedTree<String> intTree = new BalancedTree<String>(MINIMUM);
+
+		long start = 0;
+		long elapsed = 0;
+		
+		assertNotNull(intTree);
+		
+		int i = 0;
+		int j = 0;
+		
+		System.out.println(String.format("Building a BalancedTree of %,d Strings using sequential calls.", NUM_NUMBERS));
+		
+		start = System.nanoTime();
+		
+		while (i < NUM_NUMBERS) {
+			int nextNumber = i;
+			j++;
+			if (intTree.add(String.format("%,d", nextNumber))) {
+				i++;
+			}
+		}
+		
+		elapsed = System.nanoTime() - start;
+		
+		System.out.println(String.format("It took %,f seconds to make %,03d sequential calls to create the tree of %,d numbers.", elapsed / 1E9, j, NUM_NUMBERS));
+		
+		start = System.nanoTime();
+		
+		for (i = 0, j = 0; i < NUM_NUMBERS; i++) {
+			if (intTree.contains(String.format("%,d", i))) {
+				j++;
+			}
+		}
+		
+		elapsed = System.nanoTime() - start;
+		
+		System.out.println(String.format("It took %,f seconds to perform %,d searches with %,d hits for all %,d numbers.", (elapsed / 1E9), NUM_NUMBERS, j, NUM_NUMBERS));
+		
+		System.out.println();
+		System.out.println("The wonderful B-tree inorder traversal:");
+		System.out.println();
+		intTree.inorderPrint();
+		System.out.println();
+		
+		System.out.println();
+		System.out.println("The wonderful B-tree preorder traversal:");
+		System.out.println();
+		intTree.print(0);
+	}
+	
+	private void testPrintComparatorIntegerTree(long seed, int min, int num) {
+		final int MINIMUM = min;
+		final int NUM_NUMBERS = num;
+		
+		BalancedTree<Integer> intTree = new BalancedTree<Integer>(MINIMUM, new Comparator<Integer>() {
+			@Override
+			public int compare(Integer a, Integer b) {
+				int answer = -1;
+				
+				if (a == null && b == null) {
+					answer = 0;
+				} else if ((a == null) ^ (b == null)) {
+					answer = (a == null) ? -1 : 1;
+				} else {
+					answer = a.compareTo(b);
+				}
+				return answer;
+			}
+		});
+
+		long start = 0;
+		long elapsed = 0;
+		
+		assertNotNull(intTree);
+		
+		int i = 0;
+		int j = 0;
+		
+		System.out.println(String.format("Building a BalancedTree with a Comparator<Integer> of %,d Integers using sequential calls.", NUM_NUMBERS));
+		
+		start = System.nanoTime();
+		
+		while (i < NUM_NUMBERS) {
+			int nextNumber = i;
+			j++;
+			if (intTree.add(nextNumber)) {
+				i++;
+			}
+		}
+		
+		elapsed = System.nanoTime() - start;
+		
+		System.out.println(String.format("It took %,f seconds to make %,03d sequential calls to create the tree of %,d numbers.", elapsed / 1E9, j, NUM_NUMBERS));
+		
+		intTree.add(null);
+		
+		start = System.nanoTime();
+		assertTrue(intTree.contains(null));
+		elapsed = System.nanoTime() - start;
+		
+		System.out.println(String.format("It took %,f seconds to perform a search for null in a sea of %,d numbers.", (elapsed / 1E9), NUM_NUMBERS));
+		
+		start = System.nanoTime();
+		
+		for (i = 0, j = 0; i < NUM_NUMBERS; i++) {
+			if (intTree.contains(i)) {
+				j++;
+			}
+		}
+		
+		elapsed = System.nanoTime() - start;
+		
+		System.out.println(String.format("It took %,f seconds to perform %,d searches with %,d hits for all %,d numbers.", (elapsed / 1E9), NUM_NUMBERS, j, NUM_NUMBERS));
+		
+		System.out.println();
+		System.out.println("The wonderful B-tree inorder traversal:");
+		System.out.println();
+		intTree.inorderPrint();
+		System.out.println();
+		
+		System.out.println();
+		System.out.println("The wonderful B-tree preorder traversal:");
+		System.out.println();
+		intTree.print(0);
+	}
+
+	private void testPrintIntegerTree(long seed, int min, int num) {
+		final int MINIMUM = min;
+		final int NUM_NUMBERS = num;
+		
+		long start = 0;
+		long elapsed = 0;
+		
+		BalancedTree<Integer> intTree = new BalancedTree<Integer>(MINIMUM);
+
+		assertNotNull(intTree);
+		
+		int i = NUM_NUMBERS;
+		int j = 0;
+		
+		System.out.println(String.format("Building a BalancedTree of %,d Integers using sequential calls in reverse order.", NUM_NUMBERS));
+		
+		start = System.nanoTime();
+		
+		while (i > 0) {
+			int nextNumber = i;
+			j++;
+			if (intTree.add(nextNumber)) {
+				i--;
+			}
+		}
+		
+		elapsed = System.nanoTime() - start;
+		
+		System.out.println(String.format("It took %,f seconds to make %,03d sequential calls in reverse order to create the tree of %,d numbers.", elapsed / 1E9, j, NUM_NUMBERS));
+		
+		start = System.nanoTime();
+		
+		for (i = NUM_NUMBERS, j = 0; i > 0; i--) {
+			if (intTree.contains(i)) {
+				j++;
+			}
+		}
+		
+		elapsed = System.nanoTime() - start;
+		
+		System.out.println(String.format("It took %,f seconds to perform %,d searches with %,d hits for all %,d numbers.", (elapsed / 1E9), NUM_NUMBERS, j, NUM_NUMBERS));
+		
+		System.out.println();
+		System.out.println("The wonderful B-tree inorder traversal:");
+		System.out.println();
+		intTree.inorderPrint();
+		System.out.println();
+		
+		System.out.println();
+		System.out.println("The wonderful B-tree preorder traversal:");
+		System.out.println();
+		intTree.print(0);
 	}
 	
 	private void testRemoveComparatorIntegerTree(long seed, int min, int num) {
@@ -130,14 +432,14 @@ public class BalancedTreeTest {
 		
 		System.out.println(String.format("It took %,f seconds to make %,03d random generator calls to delete the tree of %,d numbers.", elapsed / 1E9, j, NUM_NUMBERS));
 		
-		i = 1;
+		i = 0;
 		j = 0;
 		
 		System.out.println(String.format("Building a BalancedTree with a Comparator<Integers> of %,d Integers using sequential calls.", NUM_NUMBERS));
 
 		start = System.nanoTime();
 		
-		while (i <= NUM_NUMBERS) {
+		while (i < NUM_NUMBERS) {
 			int nextNumber = i; 
 			
 			if (intTree.add(nextNumber)) {
@@ -423,7 +725,7 @@ public class BalancedTreeTest {
 		while (i < NUM_NUMBERS) {
 			int nextNumber = random.nextInt(NUM_NUMBERS);
 			j++;
-			if (intTree.add(String.format("%,010d", nextNumber))) {
+			if (intTree.add(String.format("%,d", nextNumber))) {
 				i++;
 			}
 		}
@@ -438,7 +740,7 @@ public class BalancedTreeTest {
 		
 		while (intTree.getNumberOfItems() > 0) {
 			int nextNumber = random.nextInt(NUM_NUMBERS); 
-			intTree.remove(String.format("%,010d", nextNumber));
+			intTree.remove(String.format("%,d", nextNumber));
 			j++;
 		}
 		
@@ -456,7 +758,7 @@ public class BalancedTreeTest {
 		while (i < NUM_NUMBERS) {
 			int nextNumber = i; 
 			
-			if (intTree.add(String.format("%,010d", nextNumber))) {
+			if (intTree.add(String.format("%,d", nextNumber))) {
 				i++;
 			}
 			j++;
@@ -469,7 +771,7 @@ public class BalancedTreeTest {
 		start = System.nanoTime();	
 		
 		for (i = 0, j = 0; i < NUM_NUMBERS; i++) {
-			if (intTree.contains(String.format("%,010d", i))) {
+			if (intTree.contains(String.format("%,d", i))) {
 				j++;
 			}
 		}
@@ -485,7 +787,7 @@ public class BalancedTreeTest {
 		while (intTree.getNumberOfItems() > 0) {
 			int nextNumber = random.nextInt(NUM_NUMBERS);
 			
-			intTree.remove(String.format("%,010d", nextNumber));
+			intTree.remove(String.format("%,d", nextNumber));
 			j++;
 		}
 
@@ -532,7 +834,7 @@ public class BalancedTreeTest {
 		while (i < NUM_NUMBERS) {
 			int nextNumber = random.nextInt(NUM_NUMBERS);
 			j++;
-			if (intTree.add(String.format("%,010d", nextNumber))) {
+			if (intTree.add(String.format("%,d", nextNumber))) {
 				i++;
 			}
 		}
@@ -552,7 +854,7 @@ public class BalancedTreeTest {
 		start = System.nanoTime();
 		
 		for (i = 0, j = 0; i < NUM_NUMBERS; i++) {
-			if (intTree.contains(String.format("%,010d", i))) {
+			if (intTree.contains(String.format("%,d", i))) {
 				j++;
 			}
 		}
@@ -586,7 +888,7 @@ public class BalancedTreeTest {
 		while (i < NUM_NUMBERS) {
 			int nextNumber = random.nextInt(NUM_NUMBERS);
 			j++;
-			if (intTree.add(String.format("%,010d", nextNumber))) {
+			if (intTree.add(String.format("%,d", nextNumber))) {
 				i++;
 			}
 		}
@@ -598,7 +900,7 @@ public class BalancedTreeTest {
 		start = System.nanoTime();
 		
 		for (i = 0, j = 0; i < NUM_NUMBERS; i++) {
-			if (intTree.contains(String.format("%,010d", i))) {
+			if (intTree.contains(String.format("%,d", i))) {
 				j++;
 			}
 		}

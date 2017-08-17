@@ -16,7 +16,6 @@ import org.junit.Test;
  *
  */
 public class BinaryTreeNodeTest {
-
 	@Test
 	public final void testNode() {
 		BinaryTreeNode<String> root = new BinaryTreeNode<>();

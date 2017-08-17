@@ -691,6 +691,28 @@ public class BalancedTree<T extends Comparable<T>> implements Cloneable {
 	}
 
 	/**
+	 * Prints an in-order representation of the B-tree; useful during debugging.
+	 * 
+	 */
+	@SuppressWarnings("unchecked")
+	public void inorderPrint() {
+		int i;
+		
+		for (i = 0; i < numberOfItems; i++) {
+			if (i < numberOfChildren) {
+				// Print the subtrees
+				((BalancedTree<T>) children[i]).inorderPrint();
+			}
+			
+			System.out.print(items[i] + " ");
+		}
+
+		if (i < numberOfChildren) {
+			((BalancedTree<T>) children[i]).inorderPrint();
+		}
+	}
+
+	/**
 	 * Remove a specified item from this B-tree.
 	 * 
 	 * @param target

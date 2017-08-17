@@ -311,7 +311,7 @@ public class BalancedTree<T extends Comparable<T>> implements Cloneable {
 	private int[] firstGreaterThanOrEqualTo(T target) {
 		int targetIndex = numberOfItems;
 		int compareResult = -1;
-		final int THRESHOLD = 8;
+		final int THRESHOLD = 11;
 
 		if (numberOfItems < THRESHOLD) {
 			for (int i = 0; i < numberOfItems; i++) {
@@ -702,6 +702,7 @@ public class BalancedTree<T extends Comparable<T>> implements Cloneable {
 			if (i < numberOfChildren) {
 				// Print the subtrees
 				((BalancedTree<T>) children[i]).inorderPrint();
+				System.out.println();
 			}
 			
 			System.out.print(items[i] + " ");

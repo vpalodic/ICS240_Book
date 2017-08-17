@@ -11,8 +11,8 @@ public class BalancedSetTest {
 	@Test
 	public void testPrintSets() {
 		final long SEED = 20170815;
-		final int MINIMUM = 3;
-		final int NUM_NUMBERS = 64;
+		final int MINIMUM = 12;
+		final int NUM_NUMBERS = 4096;
 		
 		long start = System.nanoTime();
 		
@@ -133,7 +133,7 @@ public class BalancedSetTest {
 		while (i > 0) {
 			int nextNumber = i;
 			j++;
-			if (intSet.add(String.format("%,d", nextNumber))) {
+			if (intSet.add(String.format("%d", nextNumber))) {
 				i--;
 			}
 		}
@@ -153,7 +153,7 @@ public class BalancedSetTest {
 		start = System.nanoTime();
 		
 		for (i = NUM_NUMBERS, j = 0; i > 0; i--) {
-			if (intSet.contains(String.format("%,d", i))) {
+			if (intSet.contains(String.format("%d", i))) {
 				j++;
 			}
 		}
@@ -195,7 +195,7 @@ public class BalancedSetTest {
 		while (i < NUM_NUMBERS) {
 			int nextNumber = i;
 			j++;
-			if (intSet.add(String.format("%,d", nextNumber))) {
+			if (intSet.add(String.format("%d", nextNumber))) {
 				i++;
 			}
 		}
@@ -207,7 +207,7 @@ public class BalancedSetTest {
 		start = System.nanoTime();
 		
 		for (i = 0, j = 0; i < NUM_NUMBERS; i++) {
-			if (intSet.contains(String.format("%,d", i))) {
+			if (intSet.contains(String.format("%d", i))) {
 				j++;
 			}
 		}

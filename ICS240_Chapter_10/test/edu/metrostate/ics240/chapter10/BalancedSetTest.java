@@ -11,13 +11,15 @@ public class BalancedSetTest {
 	@Test
 	public void testPrintSets() {
 		final long SEED = 20170815;
-		final int MINIMUM = 10;
-		final int NUM_NUMBERS = 1024;
+		final int MINIMUM = 16;
+		final int NUM_NUMBERS = 10240;
 		
 		long start = System.nanoTime();
 		
 		System.out.println();
-		System.out.println("Begin BalancedSet Printint Test...");
+		System.out.println("Begin BalancedSet Printing Test...");
+		System.out.println();
+		System.out.println(String.format("Using Seed: %,d\tMinimum: %,d\tSize: %,d", SEED, MINIMUM, NUM_NUMBERS));
 		System.out.println();
 		System.out.println("Testing Printing String Sets Using A Comparator<String>");
 		System.out.println();
@@ -53,12 +55,14 @@ public class BalancedSetTest {
 	@Test
 	public void testRemoveSets() {
 		final long SEED = 20170815;
-		final int MINIMUM = 16;
-		final int NUM_NUMBERS = 100_000;
+		final int MINIMUM = 10;
+		final int NUM_NUMBERS = 1024;
 		
 		long start = System.nanoTime();
 		System.out.println();
 		System.out.println("Begin BalancedSet Removing Test...");
+		System.out.println();
+		System.out.println(String.format("Using Seed: %,d\tMinimum: %,d\tSize: %,d", SEED, MINIMUM, NUM_NUMBERS));
 		System.out.println();
 		System.out.println("Testing Removing String Sets Using A Comparator<String>");
 		System.out.println();
@@ -84,12 +88,14 @@ public class BalancedSetTest {
 	@Test
 	public void testSearchSets() {
 		final long SEED = 20170815;
-		final int MINIMUM = 16;
-		final int NUM_NUMBERS = 100_000;
+		final int MINIMUM = 15;
+		final int NUM_NUMBERS = 1024;
 		
 		long start = System.nanoTime();
 		System.out.println();
 		System.out.println("Begin BalancedSet Searching Test...");
+		System.out.println();
+		System.out.println(String.format("Using Seed: %,d\tMinimum: %,d\tSize: %,d", SEED, MINIMUM, NUM_NUMBERS));
 		System.out.println();
 		System.out.println("Testing Searching String Sets Using A Comparator<String>");
 		System.out.println();
@@ -103,10 +109,15 @@ public class BalancedSetTest {
 		System.out.println();
 		testSearchComparatorIntegerSet(SEED, MINIMUM, NUM_NUMBERS);
 		System.out.println();
-		System.out.println("Testing Searching Integer Sets Using Natural Ordering");
+		System.out.println("Testing Searching Integer Sets Using Natural Ordering");		
 		System.out.println();
 		testSearchIntegerSet(SEED, MINIMUM, NUM_NUMBERS);
 		System.out.println();
+		System.out.println("Testing Searching Integer Sets Sequential Using Natural Ordering");		
+		System.out.println();
+		testSearchIntegerSequentialSet(SEED, MINIMUM, NUM_NUMBERS);
+		System.out.println();
+		
 		long elapsed = System.nanoTime() - start;
 		System.out.println(String.format("It took %,f seconds to perform the BalancedSet Searching Test!", (elapsed / 1E9)));
 		System.out.println();
@@ -996,6 +1007,54 @@ public class BalancedSetTest {
 		elapsed = System.nanoTime() - start;
 		
 		System.out.println(String.format("It took %,f seconds to make %,03d random generator calls to create the tree of %,d numbers.", elapsed / 1E9, j, NUM_NUMBERS));
+		
+		start = System.nanoTime();
+		
+		for (i = 0, j = 0; i < NUM_NUMBERS; i++) {
+			if (intSet.contains(i)) {
+				j++;
+			}
+		}
+		
+		elapsed = System.nanoTime() - start;
+		
+		System.out.println(String.format("It took %,f seconds to perform %,d searches with %,d hits for all %,d numbers.", (elapsed / 1E9), NUM_NUMBERS, j, NUM_NUMBERS));
+	}
+	
+	private void testSearchIntegerSequentialSet(long seed, int min, int num) {
+		final int MINIMUM = min;
+		final int NUM_NUMBERS = num;
+		
+		long start = 0;
+		long elapsed = 0;
+		
+		BalancedSet<Integer> intSet = new BalancedSet<Integer>(MINIMUM);
+
+		assertNotNull(intSet);
+		
+		int i = 0;
+		int j = 0;
+		
+		System.out.println(String.format("Building a BalancedSet of %,d Integers using sequential calls.", NUM_NUMBERS));
+		
+		start = System.nanoTime();
+		
+		try {
+			while (i < NUM_NUMBERS) {
+				int nextNumber = i;
+				j++;
+					if (intSet.add(nextNumber)) {
+						i++;
+					}
+			}
+		} catch (OutOfMemoryError exception) {
+			System.out.println(String.format("Ran out of memory after adding %,d out of %,d numbers :-(", i, NUM_NUMBERS));
+			fail(String.format("Ran out of memory after adding %,d out of %,d numbers :-(", i, NUM_NUMBERS));
+		}
+		
+		elapsed = System.nanoTime() - start;
+		
+		System.out.println(String.format("It took %,f seconds to make %,03d sequential calls to create the tree of %,d numbers.", elapsed / 1E9, j, NUM_NUMBERS));
 		
 		start = System.nanoTime();
 		

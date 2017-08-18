@@ -19,6 +19,8 @@ public class BalancedTreeTest {
 		System.out.println();
 		System.out.println("Begin BalancedTree Printint Test...");
 		System.out.println();
+		System.out.println(String.format("Using Seed: %,d\tMinimum: %,d\tSize: %,d", SEED, MINIMUM, NUM_NUMBERS));
+		System.out.println();
 		System.out.println("Testing Printing String Trees Using A Comparator<String>");
 		System.out.println();
 		
@@ -60,6 +62,8 @@ public class BalancedTreeTest {
 		System.out.println();
 		System.out.println("Begin BalancedTree Removing Test...");
 		System.out.println();
+		System.out.println(String.format("Using Seed: %,d\tMinimum: %,d\tSize: %,d", SEED, MINIMUM, NUM_NUMBERS));
+		System.out.println();
 		System.out.println("Testing Removing String Trees Using A Comparator<String>");
 		System.out.println();
 		testRemoveComparatorStringTree(SEED, MINIMUM, NUM_NUMBERS);
@@ -90,6 +94,8 @@ public class BalancedTreeTest {
 		long start = System.nanoTime();
 		System.out.println();
 		System.out.println("Begin BalancedTree Searching Test...");
+		System.out.println();
+		System.out.println(String.format("Using Seed: %,d\tMinimum: %,d\tSize: %,d", SEED, MINIMUM, NUM_NUMBERS));
 		System.out.println();
 		System.out.println("Testing Searching String Trees Using A Comparator<String>");
 		System.out.println();

@@ -311,7 +311,7 @@ public class BalancedTree<T extends Comparable<T>> implements Cloneable {
 	private int[] firstGreaterThanOrEqualTo(T target) {
 		int targetIndex = numberOfItems;
 		int compareResult = -1;
-		final int THRESHOLD = 11;
+		final int THRESHOLD = 3;
 
 		if (numberOfItems < THRESHOLD) {
 			for (int i = 0; i < numberOfItems; i++) {
